@@ -17,16 +17,27 @@
         android:id="@+id/game_view"
         />
 
-    <Button
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="startGame"
-        android:text="@string/start_game" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="stopGame"
-        android:text="@string/stop_game" />
+        <Button
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="startGame"
+            android:text="@string/start_game" />
+
+        <Button
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="stopGame"
+            android:text="@string/stop_game" />
+    </LinearLayout>
+
 
 </LinearLayout>

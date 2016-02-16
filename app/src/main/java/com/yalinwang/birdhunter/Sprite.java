@@ -13,6 +13,15 @@ import java.util.List;
 public class Sprite {
     private RectF rect;
     private RectF collisionRect;
+
+    public float getxVelocity() {
+        return xVelocity;
+    }
+
+    public float getyVelocity() {
+        return yVelocity;
+    }
+
     private float xVelocity;
     private float yVelocity;
     private int frame;

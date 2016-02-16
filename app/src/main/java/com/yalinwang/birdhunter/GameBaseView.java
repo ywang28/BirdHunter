@@ -2,9 +2,7 @@ package com.yalinwang.birdhunter;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -14,13 +12,14 @@ import java.util.List;
  * Created by ywang28 on 2/14/16.
  */
 public class GameBaseView extends View {
+    private Thread animationThread;
     private List<Sprite> sprites;
-    private boolean isRunningAnimation;
+    private boolean isAnimating;
 
     public GameBaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
         sprites = new ArrayList<>();
-        isRunningAnimation = false;
+        isAnimating = false;
     }
 
     @Override
@@ -28,7 +27,7 @@ public class GameBaseView extends View {
         super.onDraw(canvas);
 
         // draw all the sprites
-        for (Sprite sp : sprites)  {
+        for (Sprite sp : sprites) {
             canvas.drawBitmap(sp.getCurrentBitmap(), null, sp.getRect(), null);
         }
     }
@@ -48,13 +47,15 @@ public class GameBaseView extends View {
 
     /**
      * Main animation loop
+     *
      * @param fps - frames per second
      */
     private void animate(final int fps) {
-        Thread thread = new Thread(new Runnable() {
+        animationThread = new Thread(new Runnable() {
+
             @Override
             public void run() {
-                while (isRunningAnimation) {
+                while (isAnimating) {
                     try {
                         Thread.sleep(1000 / fps);
                     } catch (InterruptedException e) {
@@ -66,15 +67,15 @@ public class GameBaseView extends View {
                 }
             }
         });
-        thread.start();
+        animationThread.start();
     }
 
     protected void startAnimation(int fps) {
-        isRunningAnimation = true;
+        isAnimating = true;
         animate(fps);
     }
 
     protected void stopAnimation() {
-        isRunningAnimation = false;
+        isAnimating = false;
     }
 }
