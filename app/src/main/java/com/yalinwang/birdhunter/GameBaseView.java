@@ -2,6 +2,7 @@ package com.yalinwang.birdhunter;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -28,7 +29,7 @@ public class GameBaseView extends View {
 
         // draw all the sprites
         for (Sprite sp : sprites) {
-            canvas.drawBitmap(sp.getCurrentBitmap(), null, sp.getRect(), null);
+            canvas.drawBitmap(sp.getBitmap(), sp.getRectRegion(), sp.getRect(), null);
         }
     }
 

@@ -1,10 +1,9 @@
 package com.yalinwang.birdhunter;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +12,7 @@ import java.util.List;
 public class Sprite {
     private RectF rect;
     private RectF collisionRect;
+    private List<Rect> rectRegions;
 
     public float getxVelocity() {
         return xVelocity;
@@ -25,29 +25,24 @@ public class Sprite {
     private float xVelocity;
     private float yVelocity;
     private int frame;
-    private AnimationSpeed speed;
+    private AnimationSpeed animationSpeed;
 
-    private List<Bitmap> bitmaps;
+    private Bitmap bitmap;
     private int bitmapIndex;
-
-    public Sprite(RectF rect, List<Bitmap> bitmaps) {
-        initParams(rect);
-        this.bitmaps.addAll(bitmaps);
-    }
 
     public Sprite(RectF rect, Bitmap bitmap) {
         initParams(rect);
-        this.bitmaps.add(bitmap);
+        this.bitmap = bitmap;
     }
 
     private void initParams(RectF rect) {
         this.rect = rect;
-        this.bitmaps = new ArrayList<>();
         xVelocity = 0;
         yVelocity = 0;
         frame = 0;
-        speed = AnimationSpeed.MEDIUM;
+        animationSpeed = AnimationSpeed.MEDIUM;
         bitmapIndex = 0;
+        rectRegions = null;
     }
 
     public RectF getRect() {
@@ -60,6 +55,26 @@ public class Sprite {
 
     public void setyVelocity(float yVelocity) {
         this.yVelocity = yVelocity;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public void setBitmapIndex(int bitmapIndex) {
+        this.bitmapIndex = bitmapIndex;
+    }
+
+    /**
+     * set display region on screen
+     * @param rect
+     */
+    public void setRect(RectF rect) {
+        this.rect = rect;
     }
 
     public enum AnimationSpeed {
@@ -92,22 +107,36 @@ public class Sprite {
                 rect.right + xVelocity, rect.bottom + yVelocity);
     }
 
-    public Bitmap getCurrentBitmap() {
-        int bitmapSize = bitmaps.size();
+    public void setAnimationSpeed(AnimationSpeed animationSpeed) {
+        this.animationSpeed = animationSpeed;
+    }
 
-        // only one bitmap to return
-        if (bitmapSize == 1) {
-            return bitmaps.get(0);
+    /**
+     * Get the region on the sprite to show for current frame
+     * @return
+     */
+    protected Rect getRectRegion() {
+
+
+        // no animation regions defined
+        if (rectRegions == null) {
+            return null;
         }
 
-        Bitmap ret = bitmaps.get(bitmapIndex);
+        int regionSize = rectRegions.size();
+
+        Rect rectRegion = rectRegions.get(bitmapIndex);
 
         // time to switch to next bitmap
-        if (frame % speed.getSpeed() == 0) {
-            bitmapIndex = (bitmapIndex + 1) % bitmapSize;
+        if (frame % animationSpeed.getSpeed() == 0) {
+            bitmapIndex = (bitmapIndex + 1) % regionSize;
         }
 
         frame++;
-        return ret;
+        return rectRegion;
+    }
+
+    public void setRectRegions(List<Rect> rectRegions) {
+        this.rectRegions = rectRegions;
     }
 }

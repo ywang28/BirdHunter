@@ -13,23 +13,21 @@ import java.util.List;
  * Created by ywang28 on 2/14/16.
  */
 public class BirdHunterView extends GameBaseView {
-    private Sprite bird, bird2;
+    private Sprite bird;
+    private BirdSprite bird2;
 
     public BirdHunterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        List<Bitmap> bird2Bitmaps = new ArrayList<>();
-        bird2Bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.bird2));
-        bird2Bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.bird2_1));
-        bird2Bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.bird2_2));
-        bird2Bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.bird2_1));
 
         bird = new Sprite(new RectF(10, 10, 210, 60),
                 BitmapFactory.decodeResource(getResources(), R.drawable.bird1));
         bird.setxVelocity(10);
         add(bird);
 
-        bird2 = new Sprite(new RectF(50, 80, 350, 230), bird2Bitmaps);
+        bird2 = new BirdSprite(50, 80, 150, 75, 10,
+                BitmapFactory.decodeResource(getResources(), R.drawable.bird2_sp));
         bird2.setxVelocity(15);
+        bird2.setAnimationSpeed(Sprite.AnimationSpeed.FAST);
         add(bird2);
     }
 
@@ -48,8 +46,7 @@ public class BirdHunterView extends GameBaseView {
         RectF bird2Rect = bird2.getRect();
         // if bird hits edge of the screen, fly backwards
         if (bird2Rect.right > getWidth() || bird2Rect.left < 0) {
-            bird2.setxVelocity( - bird2.getxVelocity());
-
+            bird2.reverseFlyingDirection();
         }
 
         super.onAnimationTick();
