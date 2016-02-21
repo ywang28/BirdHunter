@@ -15,7 +15,7 @@ import java.util.List;
 public class GameBaseView extends View {
     private Thread animationThread;
     private List<Sprite> sprites;
-    private boolean isAnimating;
+    protected boolean isAnimating;
 
     public GameBaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,6 +35,10 @@ public class GameBaseView extends View {
 
     protected void add(Sprite sprite) {
         sprites.add(sprite);
+    }
+
+    protected void remove(Sprite sprite) {
+        sprites.remove(sprite);
     }
 
     /**

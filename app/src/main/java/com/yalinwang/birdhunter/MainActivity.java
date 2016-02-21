@@ -21,4 +21,5 @@ public class MainActivity extends AppCompatActivity {
         BirdHunterView gameView = (BirdHunterView)findViewById(R.id.game_view);
         gameView.stopAnimation();
     }
+
 }
