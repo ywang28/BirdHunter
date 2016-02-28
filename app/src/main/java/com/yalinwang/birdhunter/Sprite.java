@@ -1,6 +1,7 @@
 package com.yalinwang.birdhunter;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by ywang28 on 2/14/16.
  */
-public class Sprite {
+public class Sprite implements DrawableArt {
     private RectF rect;
     private RectF collisionRect;
     private List<Rect> rectRegions;
@@ -77,6 +78,17 @@ public class Sprite {
         this.rect = rect;
     }
 
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(bitmap, getRectRegion(), rect, null);
+    }
+
+    @Override
+    public void update() {
+        rect.set(rect.left + xVelocity, rect.top + yVelocity,
+                rect.right + xVelocity, rect.bottom + yVelocity);
+    }
+
     public enum AnimationSpeed {
         SLOW(10),
         MEDIUM(8),
@@ -100,11 +112,6 @@ public class Sprite {
 
     public void setCollisionMargin(float margin) {
 
-    }
-
-    public void move() {
-        rect.set(rect.left + xVelocity, rect.top + yVelocity,
-                rect.right + xVelocity, rect.bottom + yVelocity);
     }
 
     public void setAnimationSpeed(AnimationSpeed animationSpeed) {

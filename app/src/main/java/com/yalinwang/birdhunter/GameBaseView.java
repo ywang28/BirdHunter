@@ -13,13 +13,12 @@ import java.util.List;
  * Created by ywang28 on 2/14/16.
  */
 public class GameBaseView extends View {
-    private Thread animationThread;
-    private List<Sprite> sprites;
+    private List<DrawableArt> arts;
     protected boolean isAnimating;
 
     public GameBaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        sprites = new ArrayList<>();
+        arts = new ArrayList<>();
         isAnimating = false;
     }
 
@@ -27,26 +26,27 @@ public class GameBaseView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // draw all the sprites
-        for (Sprite sp : sprites) {
-            canvas.drawBitmap(sp.getBitmap(), sp.getRectRegion(), sp.getRect(), null);
+        // draw all the arts
+        for (DrawableArt art : arts) {
+            art.draw(canvas);
         }
+
     }
 
-    protected void add(Sprite sprite) {
-        sprites.add(sprite);
+    protected void add(DrawableArt art) {
+        arts.add(art);
     }
 
-    protected void remove(Sprite sprite) {
-        sprites.remove(sprite);
+    protected void remove(DrawableArt art) {
+        arts.remove(art);
     }
 
     /**
-     * Move all sprites in the container
+     * Update all arts in the container
      */
     protected void onAnimationTick() {
-        for (Sprite sp : sprites) {
-            sp.move();
+        for (DrawableArt art : arts) {
+            art.update();
         }
     }
 
@@ -56,7 +56,7 @@ public class GameBaseView extends View {
      * @param fps - frames per second
      */
     private void animate(final int fps) {
-        animationThread = new Thread(new Runnable() {
+        Thread animationThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
