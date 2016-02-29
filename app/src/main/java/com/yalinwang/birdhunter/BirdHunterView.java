@@ -20,10 +20,11 @@ public class BirdHunterView extends GameBaseView {
     private List<Sprite> arrowsToRemove;
     private Random random;
     private Label remainingBirdsLabel, scoreLabel;
-    private static final int BIRDS_COUNT = 20;
+    private static final int BIRDS_COUNT = 10;
     private static final int BIRD_SCORE = 10;
     private int remainingBirds;
     private int score;
+    private ArrowShooter shooter;
 
     public BirdHunterView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -33,7 +34,10 @@ public class BirdHunterView extends GameBaseView {
     private void initGame() {
         birds = new ArrayList<>();
         birdsToRemove = new ArrayList<>();
+        arrows = new ArrayList<>();
+        arrowsToRemove = new ArrayList<>();
         random = new Random();
+
 
         remainingBirds = BIRDS_COUNT;
         score = 0;
@@ -58,11 +62,18 @@ public class BirdHunterView extends GameBaseView {
     }
 
     public void startGame() {
-        // start new game
         if (remainingBirds == 0) {
             remainingBirds = BIRDS_COUNT;
         }
+        // start new game or resume old game
+        updateLabels();
+
+        // initially add only one shooter in the center
+        shooter = new ArrowShooter(getWidth() / 2);
+        add(shooter);
+
         startAnimation(20);
+
     }
 
     @Override
@@ -75,10 +86,11 @@ public class BirdHunterView extends GameBaseView {
 
         boolean gameComplete = detectCollision();
 
-        updateLabels();
-
+        // reset birds and score after game is complete
         if (gameComplete) {
             stopAnimation();
+            remainingBirds = BIRDS_COUNT;
+            score = 0;
         }
 
     }
@@ -123,6 +135,7 @@ public class BirdHunterView extends GameBaseView {
                         if (bird.isCollidingWith(arrow)) {
                             remainingBirds--;
                             score += BIRD_SCORE;
+                            updateLabels();
                             remove(bird);
                             remove(arrow);
                             birdsToRemove.add(bird);
@@ -151,24 +164,22 @@ public class BirdHunterView extends GameBaseView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (isAnimating) {
-            createArrow(event.getRawX());
+            createArrow();
         }
         return super.onTouchEvent(event);
     }
 
     /**
      * create an arrow to shoot birds
-     * @param x
      */
-    private void createArrow(float x) {
-        if (arrows == null) {
-            arrows = new ArrayList<>();
-            arrowsToRemove = new ArrayList<>();
+    private void createArrow() {
+        if (shooter.readyToShoot()) {
+            float xPos = shooter.getxPos();
+            ArrowSprite arrow = new ArrowSprite(new RectF(xPos - 10, getHeight() - 100, xPos + 10, getHeight()),
+                    BitmapFactory.decodeResource(getResources(), R.drawable.arrow));
+            arrow.setyVelocity(-10);
+            add(arrow);
+            arrows.add(arrow);
         }
-        Sprite arrow = new Sprite(new RectF(x - 10, getHeight() - 100, x + 10, getHeight()),
-                BitmapFactory.decodeResource(getResources(), R.drawable.arrow));
-        arrow.setyVelocity(-10);
-        add(arrow);
-        arrows.add(arrow);
     }
 }
