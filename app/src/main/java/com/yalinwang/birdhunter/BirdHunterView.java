@@ -14,8 +14,8 @@ import java.util.Random;
  * Created by ywang28 on 2/14/16.
  */
 public class BirdHunterView extends GameBaseView {
-    private List<BirdSprite> birds;
-    private List<BirdSprite> birdsToRemove;
+    private List<Bird> birds;
+    private List<Bird> birdsToRemove;
     private List<Sprite> arrows;
     private List<Sprite> arrowsToRemove;
     private Random random;
@@ -53,12 +53,11 @@ public class BirdHunterView extends GameBaseView {
     }
 
     private void addBird(float left, float top) {
-        BirdSprite bird = new BirdSprite(left, top, 150, 75, 10,
-                BitmapFactory.decodeResource(getResources(), R.drawable.bird2_sp));
+        Bird bird = new Bird(getResources(), Bird.BirdType.BLUE_BIRD, left, top);
         bird.setxVelocity(15);
         bird.setAnimationSpeed(Sprite.AnimationSpeed.FAST);
         birds.add(bird);
-        add(bird);
+        add(bird.getSprite());
     }
 
     public void startGame() {
@@ -114,7 +113,7 @@ public class BirdHunterView extends GameBaseView {
      * Reverse flying direction if birds hit wall
      */
     private void updateBirds() {
-        for (BirdSprite bird : birds) {
+        for (Bird bird : birds) {
             RectF birdRect = bird.getRect();
             // if bird hits edge of the screen, fly backwards
             if (birdRect.right > getWidth() || birdRect.left < 0) {
@@ -131,15 +130,20 @@ public class BirdHunterView extends GameBaseView {
                     arrowsToRemove.add(arrow);
                 }
                 else {
-                    for (BirdSprite bird : birds) {
+                    for (Bird bird : birds) {
                         if (bird.isCollidingWith(arrow)) {
-                            remainingBirds--;
-                            score += BIRD_SCORE;
-                            updateLabels();
-                            remove(bird);
                             remove(arrow);
-                            birdsToRemove.add(bird);
                             arrowsToRemove.add(arrow);
+                            bird.loseHP(40);
+
+                            // remove bird if it's dead and update score
+                            if (bird.isDead()) {
+                                remainingBirds--;
+                                score += BIRD_SCORE;
+                                updateLabels();
+                                remove(bird.getSprite());
+                                birdsToRemove.add(bird);
+                            }
                         }
                     }
                 }
