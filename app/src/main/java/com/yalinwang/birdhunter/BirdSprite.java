@@ -86,7 +86,7 @@ public class BirdSprite extends Sprite {
         blackPaint.setStyle(Paint.Style.STROKE);
         blackPaint.setARGB(255, 0, 0, 0);
         float remainingHPWidth = HP_BAR_WIDTH * hpRatio;
-        RectF rectF = getRect();
+        RectF rectF = getRectF();
         float mid = (rectF.left + rectF.right) / 2;
         float left = mid - HP_BAR_WIDTH / 2;
         float top = rectF.top - HP_BAR_HEIGHT - HP_BAR_OFFSET;

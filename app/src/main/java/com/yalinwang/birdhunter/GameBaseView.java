@@ -31,6 +31,7 @@ public class GameBaseView extends View {
             art.draw(canvas);
         }
 
+
     }
 
     protected void add(DrawableArt art) {

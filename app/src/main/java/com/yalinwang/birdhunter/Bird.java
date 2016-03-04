@@ -2,7 +2,6 @@ package com.yalinwang.birdhunter;
 
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
@@ -63,7 +62,7 @@ public class Bird {
     }
 
     public RectF getRect() {
-        return sprite.getRect();
+        return sprite.getRectF();
     }
 
     public BirdSprite getSprite() {

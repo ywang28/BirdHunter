@@ -16,7 +16,7 @@ public class ArrowShooter implements DrawableArt {
     }
 
     // reloading time is 10 frames
-    private static final int FRAMES_PER_SHOOT = 30;
+    private static final int FRAMES_PER_SHOOT = 10;
     private int frameCount;
 
     public ArrowShooter(float xPos) {

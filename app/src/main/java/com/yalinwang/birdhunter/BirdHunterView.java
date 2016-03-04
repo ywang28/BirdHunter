@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -72,7 +73,6 @@ public class BirdHunterView extends GameBaseView {
         add(shooter);
 
         startAnimation(20);
-
     }
 
     @Override
@@ -105,7 +105,7 @@ public class BirdHunterView extends GameBaseView {
     private void addBirds() {
 
         while (birds.size() < 3 && remainingBirds > 2) {
-            addBird(random.nextFloat() * 200, random.nextFloat() * 200 + 40);
+            addBird(random.nextFloat() * 200, random.nextFloat() * 200 + 80);
         }
     }
 
@@ -126,7 +126,7 @@ public class BirdHunterView extends GameBaseView {
         if (arrows != null) {
             for (Sprite arrow : arrows) {
                 // remove off screen arrows
-                if (arrow.getRect().bottom < 0) {
+                if (arrow.getRectF().bottom < 0) {
                     arrowsToRemove.add(arrow);
                 }
                 else {
@@ -135,7 +135,6 @@ public class BirdHunterView extends GameBaseView {
                             remove(arrow);
                             arrowsToRemove.add(arrow);
                             bird.loseHP(40);
-
                             // remove bird if it's dead and update score
                             if (bird.isDead()) {
                                 remainingBirds--;

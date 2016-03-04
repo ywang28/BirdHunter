@@ -11,7 +11,7 @@ import java.util.List;
  * Created by ywang28 on 2/14/16.
  */
 public class Sprite implements DrawableArt {
-    private RectF rect;
+    private RectF rectF;
     private RectF collisionRect;
     private List<Rect> rectRegions;
 
@@ -37,7 +37,7 @@ public class Sprite implements DrawableArt {
     }
 
     private void initParams(RectF rect) {
-        this.rect = rect;
+        this.rectF = rect;
         xVelocity = 0;
         yVelocity = 0;
         frame = 0;
@@ -46,8 +46,8 @@ public class Sprite implements DrawableArt {
         rectRegions = null;
     }
 
-    public RectF getRect() {
-        return rect;
+    public RectF getRectF() {
+        return rectF;
     }
 
     public void setxVelocity(float xVelocity) {
@@ -72,21 +72,21 @@ public class Sprite implements DrawableArt {
 
     /**
      * set display region on screen
-     * @param rect
+     * @param rectF
      */
-    public void setRect(RectF rect) {
-        this.rect = rect;
+    public void setRectF(RectF rectF) {
+        this.rectF = rectF;
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, getRectRegion(), rect, null);
+        canvas.drawBitmap(bitmap, getRectRegion(), rectF, null);
     }
 
     @Override
     public void update() {
-        rect.set(rect.left + xVelocity, rect.top + yVelocity,
-                rect.right + xVelocity, rect.bottom + yVelocity);
+        rectF.set(rectF.left + xVelocity, rectF.top + yVelocity,
+                rectF.right + xVelocity, rectF.bottom + yVelocity);
     }
 
     public enum AnimationSpeed {
@@ -107,7 +107,7 @@ public class Sprite implements DrawableArt {
 
 
     public boolean isCollidingWith(Sprite other) {
-        return rect.intersect(other.rect);
+        return RectF.intersects(rectF, other.getRectF());
     }
 
     public void setCollisionMargin(float margin) {
