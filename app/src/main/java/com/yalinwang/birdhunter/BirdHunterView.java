@@ -1,10 +1,8 @@
 package com.yalinwang.birdhunter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -17,8 +15,8 @@ import java.util.Random;
 public class BirdHunterView extends GameBaseView {
     private List<Bird> birds;
     private List<Bird> birdsToRemove;
-    private List<Sprite> arrows;
-    private List<Sprite> arrowsToRemove;
+    private List<Arrow> arrows;
+    private List<Arrow> arrowsToRemove;
     private Random random;
     private Label remainingBirdsLabel, scoreLabel;
     private static final int BIRDS_COUNT = 10;
@@ -68,9 +66,11 @@ public class BirdHunterView extends GameBaseView {
         // start new game or resume old game
         updateLabels();
 
-        // initially add only one shooter in the center
-        shooter = new ArrowShooter(getWidth() / 2);
-        add(shooter);
+        if (shooter == null) {
+            // initially add only one shooter in the center
+            shooter = new ArrowShooter(getWidth() / 2, getHeight());
+            add(shooter);
+        }
 
         startAnimation(20);
     }
@@ -114,7 +114,7 @@ public class BirdHunterView extends GameBaseView {
      */
     private void updateBirds() {
         for (Bird bird : birds) {
-            RectF birdRect = bird.getRect();
+            RectF birdRect = bird.getRectF();
             // if bird hits edge of the screen, fly backwards
             if (birdRect.right > getWidth() || birdRect.left < 0) {
                 bird.reverseFlyingDirection();
@@ -124,17 +124,17 @@ public class BirdHunterView extends GameBaseView {
 
     private boolean detectCollision() {
         if (arrows != null) {
-            for (Sprite arrow : arrows) {
+            for (Arrow arrow : arrows) {
                 // remove off screen arrows
                 if (arrow.getRectF().bottom < 0) {
                     arrowsToRemove.add(arrow);
                 }
                 else {
                     for (Bird bird : birds) {
-                        if (bird.isCollidingWith(arrow)) {
-                            remove(arrow);
+                        if (bird.isCollidingWith(arrow.getArrowSprite())) {
+                            remove(arrow.getArrowSprite());
                             arrowsToRemove.add(arrow);
-                            bird.loseHP(40);
+                            bird.loseHP(arrow.getPower());
                             // remove bird if it's dead and update score
                             if (bird.isDead()) {
                                 remainingBirds--;
@@ -177,11 +177,8 @@ public class BirdHunterView extends GameBaseView {
      */
     private void createArrow() {
         if (shooter.readyToShoot()) {
-            float xPos = shooter.getxPos();
-            ArrowSprite arrow = new ArrowSprite(new RectF(xPos - 10, getHeight() - 100, xPos + 10, getHeight()),
-                    BitmapFactory.decodeResource(getResources(), R.drawable.arrow));
-            arrow.setyVelocity(-10);
-            add(arrow);
+            Arrow arrow = shooter.createArrow(getResources());
+            add(arrow.getArrowSprite());
             arrows.add(arrow);
         }
     }

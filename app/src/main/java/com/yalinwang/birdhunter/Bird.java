@@ -61,7 +61,7 @@ public class Bird {
         sprite.setAnimationSpeed(sp);
     }
 
-    public RectF getRect() {
+    public RectF getRectF() {
         return sprite.getRectF();
     }
 
