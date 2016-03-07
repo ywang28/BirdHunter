@@ -1,9 +1,11 @@
 package com.yalinwang.birdhunter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +20,12 @@ public class BirdHunterView extends GameBaseView {
     private List<Arrow> arrows;
     private List<Arrow> arrowsToRemove;
     private Random random;
-    private Label remainingBirdsLabel, scoreLabel;
+    private Label remainingBirdsLabel, coinLabel;
     private static final int BIRDS_COUNT = 10;
-    private static final int BIRD_SCORE = 10;
+    private static final int BIRD_COIN = 10;
+    private static final int COINS_TO_UPGRADE_ARROW = 20;
     private int remainingBirds;
-    private int score;
+    private int coins;
     private ArrowShooter shooter;
 
     public BirdHunterView(Context context, AttributeSet attrs) {
@@ -39,16 +42,16 @@ public class BirdHunterView extends GameBaseView {
 
 
         remainingBirds = BIRDS_COUNT;
-        score = 0;
+        coins = 0;
         addLabels();
     }
 
     private void addLabels() {
         remainingBirdsLabel = new Label("Remaining birds: " + remainingBirds, 10, 30, null);
-        scoreLabel = new Label("Score: " + score, 300, 30, null);
+        coinLabel = new Label("Coin: " + coins, 300, 30, null);
 
         add(remainingBirdsLabel);
-        add(scoreLabel);
+        add(coinLabel);
     }
 
     private void addBird(float left, float top) {
@@ -85,18 +88,20 @@ public class BirdHunterView extends GameBaseView {
 
         boolean gameComplete = detectCollision();
 
-        // reset birds and score after game is complete
+        updateUpgradeButtonStatus();
+
+        // reset birds and coins after game is complete
         if (gameComplete) {
             stopAnimation();
             remainingBirds = BIRDS_COUNT;
-            score = 0;
+            coins = 0;
         }
 
     }
 
     private void updateLabels() {
         remainingBirdsLabel.setText("Remaining Birds: " + remainingBirds);
-        scoreLabel.setText("Score: " + score);
+        coinLabel.setText("Score: " + coins);
     }
 
     /**
@@ -134,11 +139,11 @@ public class BirdHunterView extends GameBaseView {
                         if (bird.isCollidingWith(arrow.getArrowSprite())) {
                             remove(arrow.getArrowSprite());
                             arrowsToRemove.add(arrow);
-                            bird.loseHP(arrow.getPower());
-                            // remove bird if it's dead and update score
+                            bird.loseHP(shooter.getPower());
+                            // remove bird if it's dead and update coins
                             if (bird.isDead()) {
                                 remainingBirds--;
-                                score += BIRD_SCORE;
+                                coins += BIRD_COIN;
                                 updateLabels();
                                 remove(bird.getSprite());
                                 birdsToRemove.add(bird);
@@ -182,4 +187,21 @@ public class BirdHunterView extends GameBaseView {
             arrows.add(arrow);
         }
     }
+
+    /**
+     * TODO coins conflicts in multi threading.
+     */
+    public  void upgradeArrow() {
+        shooter.upgrade();
+        coins -= COINS_TO_UPGRADE_ARROW;
+        updateUpgradeButtonStatus();
+    }
+
+    private void updateUpgradeButtonStatus() {
+        // disable the button if not enough money for next upgrade
+        Activity activity = (Activity) getContext();
+        Button upgradeArrowButton = (Button) activity.findViewById(R.id.upgrade_arrow_button);
+        upgradeArrowButton.setEnabled(coins >= COINS_TO_UPGRADE_ARROW);
+    }
+
 }

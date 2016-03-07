@@ -37,6 +37,16 @@
             android:layout_height="wrap_content"
             android:onClick="stopGame"
             android:text="@string/stop_game" />
+
+        <Button
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="upgradeArrow"
+            android:id="@+id/upgrade_arrow_button"
+            android:enabled="false"
+            android:text="@string/upgrade_arrow" />
     </LinearLayout>
 
 

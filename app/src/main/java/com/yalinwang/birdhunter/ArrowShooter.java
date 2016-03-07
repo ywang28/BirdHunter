@@ -13,9 +13,20 @@ public class ArrowShooter implements DrawableArt {
     private float xPos;
     private float yPos;
     private ArrowType arrowType;
+    private static final double UPGRADE_FACTOR_BASE = 1.5;
+    private double upgradeFactor;
 
-    public float getxPos() {
-        return xPos;
+
+    public int getPower() {
+        // TODO int overflow problem
+        return (int)(arrowType.getPower() * upgradeFactor);
+    }
+
+    /**
+     * multiply power factor by upgrade base factor each time
+     */
+    public void upgrade() {
+        upgradeFactor *= UPGRADE_FACTOR_BASE;
     }
 
     // reloading time is 10 frames
@@ -27,6 +38,7 @@ public class ArrowShooter implements DrawableArt {
         this.yPos = yPos;
         arrowType = ArrowType.BASIC_ARROW;
         frameCount = 0;
+        upgradeFactor = 1.0;
     }
 
     public enum ArrowType {
@@ -96,6 +108,6 @@ public class ArrowShooter implements DrawableArt {
         return new Arrow(new RectF(xPos - halfWidth, yPos - height, xPos + halfWidth, yPos),
                 BitmapFactory.decodeResource(res, id),
                 arrowType.getVelocity(),
-                arrowType.getPower());
+                getPower());
     }
 }
